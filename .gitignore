@@ -1,4 +1,3 @@
-keys
-data
-keys/**
-data/**
+# Keys & data folders
+keys/
+data/

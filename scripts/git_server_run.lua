@@ -6,7 +6,8 @@
 -- - inicia um cronjob que atualiza os repositórios com a origem se estiverem desatualizados
 -- - disponibiliza logs importantes para stdout até receber um comando de parada
 
-local repo_dir = "/repo"
+local workdir = "/usr/git"
+local repo_dir = "/repo/"
 local repo_filename = "git_repos"
 
 function scandir(directory)
@@ -20,8 +21,14 @@ function scandir(directory)
     return t
 end
 
-function check_repos(workdir)
-    local dir_list = scandir(workdir..repo_dir)
+function create_repo(repo_name, repo_url)
+    assert(os.execute("mkdir "..workdir..repo_dir..repo_name))
+    assert(os.execute("git clone "..repo_url.." "..workdir..repo_dir..repo_name), "Git clone of "..repo_name.." didn't work!")
+    return 0
+end
+
+function check_repos(appdir)
+    local dir_list = scandir(appdir..repo_dir)
     local repo_file = assert(io.open(repo_filename, "r"))
     local lines = {}
     for line in repo_file:lines() do
@@ -30,7 +37,9 @@ function check_repos(workdir)
     repo_file:close()
 
     local found = 0
+    local repo_name
     for line in lines do
+        repo_name = string.sub(line, 31, -4)
         for dir in dir_list do
             if line == dir then
                 found = 1
@@ -38,10 +47,13 @@ function check_repos(workdir)
             end
         end
         if found == 1 then
-            -- log success in finding repo           
+            print("Found repo: "..repo_name)
         else
-            -- execute creation of repo
+            print("Did not find repo: "..repo_name)
+            print("Creating...")
+            assert(create_repo(repo_name,line), "Repo creation failed!")
         end
     end
 end
 
+function setup_cronjob(cronjob_script)

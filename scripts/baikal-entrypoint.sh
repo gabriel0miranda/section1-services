@@ -1,5 +1,5 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 
-supervisorctl start php-fpm
-supervisorctl start nginx
+supervisorctl -c /etc/baikal.conf start php-fpm
+supervisorctl -c /etc/baikal.conf start nginx

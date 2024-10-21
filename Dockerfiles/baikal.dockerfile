@@ -1,5 +1,7 @@
 FROM php:8.2-fpm-alpine
 
+WORKDIR /usr/share/nginx
+
 RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
 COPY configs/baikal-php.ini /usr/local/etc/php/conf.d/custom.ini
 
@@ -11,9 +13,10 @@ RUN mkdir /var/run/php-fpm && \
     rmdir /usr/share/nginx && \
     wget https://github.com/sabre-io/Baikal/releases/download/0.9.5/baikal-0.9.5.zip -O /usr/share/baikal.zip && \
     unzip /usr/share/baikal.zip -d /usr/share/ && \
-    mv /usr/share/baikal /usr/share/nginx
+    mv /usr/share/baikal /usr/share/nginx && \
+    rm /usr/share/baikal.zip
 
-RUN chown -R www-data:www-data /usr/share/nginx/html /usr/share/nginx/Specific /usr/share/nginx/config
+RUN chown -R www-data:www-data /usr/share/nginx/html /usr/share/nginx/Specific /usr/share/nginx/config /etc/supervisord.conf
 
 COPY configs/baikal-fpm.conf /usr/local/etc/php-fpm.d/zz-docker.conf
 
@@ -28,6 +31,8 @@ COPY scripts/baikal-entrypoint.sh /usr/local/bin/docker-entrypoint
 RUN chmod +x /usr/local/bin/docker-entrypoint
 
 RUN chown -R www-data:www-data /var/log/nginx /run/ /usr/lib/nginx /run/nginx /var/lib/nginx
+
+VOLUME ["/usr/share/nginx/Specific","/usr/share/nginx/config"]
 
 EXPOSE 80
 

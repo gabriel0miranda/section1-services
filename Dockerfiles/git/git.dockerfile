@@ -2,7 +2,7 @@ FROM alpine:3.19
 
 WORKDIR /usr/git
 
-COPY  ../scripts/git_cronjob.lua ../scripts/git_server_run.lua ../keys/git_keys ../data/git_origins /usr/git
+COPY  /scripts/git/git_cronjob.lua /scripts/git/git_server_run.lua /keys/git/git_keys /data/git/git_origins /usr/git
 
 RUN adduser git && \
     chown -R git /usr/git && \

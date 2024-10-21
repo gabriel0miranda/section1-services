@@ -3,7 +3,7 @@ FROM php:8.2-fpm-alpine
 WORKDIR /usr/share/nginx
 
 RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
-COPY configs/baikal-php.ini /usr/local/etc/php/conf.d/custom.ini
+COPY configs/baikal/baikal-php.ini /usr/local/etc/php/conf.d/custom.ini
 
 RUN apk --no-cache update && \
     apk --no-cache --virtual add nginx zip supervisor
@@ -18,15 +18,15 @@ RUN mkdir /var/run/php-fpm && \
 
 RUN chown -R www-data:www-data /usr/share/nginx/html /usr/share/nginx/Specific /usr/share/nginx/config /etc/supervisord.conf
 
-COPY configs/baikal-fpm.conf /usr/local/etc/php-fpm.d/zz-docker.conf
+COPY configs/baikal/baikal-fpm.conf /usr/local/etc/php-fpm.d/zz-docker.conf
 
-COPY configs/baikal-nginx.conf /etc/nginx/nginx.conf
+COPY configs/baikal/baikal-nginx.conf /etc/nginx/nginx.conf
 
-COPY configs/baikal-nginx-default.conf /etc/nginx/conf.d/default.conf
+COPY configs/baikal/baikal-nginx-default.conf /etc/nginx/conf.d/default.conf
 
-COPY supervisor/baikal.conf /etc/baikal.conf
+COPY supervisor/baikal/baikal.conf /etc/baikal.conf
 
-COPY scripts/baikal-entrypoint.sh /usr/local/bin/docker-entrypoint
+COPY scripts/baikal/baikal-entrypoint.sh /usr/local/bin/docker-entrypoint
 
 RUN chmod +x /usr/local/bin/docker-entrypoint
 

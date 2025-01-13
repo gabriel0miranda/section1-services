@@ -1,3 +1,4 @@
 machines:
   hosts:
-    i.section1:
+    homelab.section1:
+      ansible_host: 192.168.0.111

@@ -1,0 +1,52 @@
+---
+- name: Build coredns image # doing this locally right now since I don't have a CI thing going
+  hosts: localhost
+  gather_facts: yes
+  vars:
+    build_path: ../../coredns/
+    image_name: coredns-dns-server
+    image_tag: 0.0.1
+    image_archive: coredns-server.tar
+  tasks:
+    - name: "Build image using podman"
+      containers.podman.podman_image:
+        name: "{{ image_name }}"
+        path: "{{ build_path }}"
+        tag: "{{ image_tag }}"
+        build:
+          format: docker
+    - name: "Create temp folder for image tar"
+      ansible.builtin.shell: mkdir /tmp/{{ image_name }}
+    - name: "Save image tar"
+      containers.podman.podman_save:
+        image: "{{ image_name }}:{{ image_tag }}"
+        dest: "/tmp/{{ image_name }}/{{ image_archive }}"
+
+- name: Deploy coredns image
+  hosts: machines
+  gather_facts: yes
+  vars:
+    service_port: 53
+    image_name: coredns-dns-server
+    image_archive: coredns-server.tar
+    image_tag: 0.0.1
+    service_name: coredns
+  tasks:
+    - name: "Copy image archive to host(s)"
+      ansible.builtin.copy:
+        src: "/tmp/{{ image_name }}/{{ image_archive }}"
+        dest: "/home/anon/{{ image_archive }}"
+        owner: anon
+        group: anon
+        mode: u=rw,g=r,o=r
+    - name: "Load image from archive"
+      containers.podman.podman_load:
+        input: "/home/anon/{{ image_archive }}"
+    - name: "Run image"
+      containers.podman.podman_container:
+        name: "{{ service_name }}"
+        image: "{{ service_name }}:{{ image_tag }}"
+        state: started
+        ports:
+          - "{{ service_port }}:{{ service_port }}/udp"
+      

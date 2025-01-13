@@ -1,0 +1,7 @@
+section1:53 {
+  file db.section1
+  log
+  errors
+  cache
+  forward . 1.1.1.1 1.0.0.1
+}

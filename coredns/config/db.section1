@@ -1,0 +1,17 @@
+;
+; Zone File for "section1" - Internal use ONLY
+;
+$TTL 1D
+@                   IN        SOA         ns.section1.      sysadmin.section1.    (
+                                          10                ; Serial
+                                          8H                ; Refresh
+                                          2H                ; Retry
+                                          4W                ; Expire
+                                          1D )              ; Minimum
+;
+                    IN        NS          ns                ; Nameserver
+                    IN        MX  10      mail              ; E-mail
+;
+section1.           IN        A           192.168.0.111
+ns                  IN        A           192.168.0.111
+homelab             IN        CNAME           ns

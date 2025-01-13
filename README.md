@@ -4,7 +4,7 @@ This repository holds scripts, configuration files and other stuff that I use to
 
 The directory structure is the following:
 
-- `[service name]/`
+- `[service name]/` for service specific files
 
     - `config/` for configuration files
 
@@ -13,6 +13,8 @@ The directory structure is the following:
     - `supervisor/` for supervisor units and configuration files
 
 - `ansible/` for Ansible files
+    - `inventory/` for inventory files (hosts and machines)
+    - `playbooks/` for Ansible playbooks
 
 
 ## Services

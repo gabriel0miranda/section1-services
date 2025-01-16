@@ -47,8 +47,6 @@
         name: "{{ service_name }}"
         image: "localhost/{{ image_name }}:{{ image_tag }}"
         state: started
-        network: host
         publish:
-          - "{{ service_port }}:{{ service_port }}/udp"
-          - "{{ service_port }}:{{ service_port }}/tcp"
+          - "192.168.0.111:{{ service_port }}:{{ service_port }}/udp"
       

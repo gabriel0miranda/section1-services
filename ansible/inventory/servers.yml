@@ -1,4 +1,4 @@
 machines:
   hosts:
-    homelab.section1:
+    mugi.section1:
       ansible_host: 192.168.0.111

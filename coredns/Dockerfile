@@ -18,7 +18,7 @@ COPY script/coredns-entrypoint.sh /usr/local/bin/docker-entrypoint
 
 RUN chmod +x /usr/local/bin/docker-entrypoint
 
-EXPOSE 53/tcp 53/udp 953/tcp
+EXPOSE 5353/tcp 5353/udp 953/tcp
 
 #USER coredns
 

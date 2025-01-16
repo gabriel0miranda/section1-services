@@ -15,8 +15,8 @@
         tag: "{{ image_tag }}"
         build:
           format: docker
-    - name: "Create temp folder for image tar"
-      ansible.builtin.shell: mkdir /tmp/{{ image_name }}
+    - name: "Create temp folder for image tar if it doesn't exist"
+      ansible.builtin.shell: ls /tmp/{{ image_name }} 2> /dev/null && echo "Folder exists" || mkdir /tmp/{{ image_name }} 
     - name: "Save image tar"
       containers.podman.podman_save:
         image: "{{ image_name }}:{{ image_tag }}"
@@ -26,7 +26,7 @@
   hosts: machines
   gather_facts: yes
   vars:
-    service_port: 53
+    service_port: 5353
     image_name: coredns-dns-server
     image_archive: coredns-server.tar
     image_tag: 0.0.1
@@ -45,8 +45,10 @@
     - name: "Run image"
       containers.podman.podman_container:
         name: "{{ service_name }}"
-        image: "{{ service_name }}:{{ image_tag }}"
+        image: "localhost/{{ image_name }}:{{ image_tag }}"
         state: started
-        ports:
+        network: host
+        publish:
           - "{{ service_port }}:{{ service_port }}/udp"
+          - "{{ service_port }}:{{ service_port }}/tcp"
       

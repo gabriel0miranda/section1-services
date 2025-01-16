@@ -13,5 +13,6 @@ $TTL 1D
                     IN        MX  10      mail              ; E-mail
 ;
 section1.           IN        A           192.168.0.111
-ns                  IN        A           192.168.0.111
-homelab             IN        CNAME           ns
+mugi                IN        A           192.168.0.111
+ns                  IN        CNAME          mugi
+mail                IN        CNAME          mugi

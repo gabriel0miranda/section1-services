@@ -2,6 +2,7 @@
 ; Zone File for "section1" - Internal use ONLY
 ;
 $TTL 1D
+$ORIGIN section1.
 @                   IN        SOA         ns.section1.      sysadmin.section1.    (
                                           10                ; Serial
                                           8H                ; Refresh

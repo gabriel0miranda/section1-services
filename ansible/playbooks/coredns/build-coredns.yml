@@ -1,0 +1,23 @@
+---
+- name: Build coredns image # doing this locally right now since I don't have a CI thing going
+  hosts: localhost
+  gather_facts: yes
+  vars:
+    build_path: ../../../coredns/
+    image_name: coredns-dns-server
+    image_tag: 0.0.2
+    image_archive: coredns-server.tar
+  tasks:
+    - name: "Build image using podman"
+      containers.podman.podman_image:
+        name: "{{ image_name }}"
+        path: "{{ build_path }}"
+        tag: "{{ image_tag }}"
+        build:
+          format: docker
+    - name: "Create temp folder for image tar if it doesn't exist"
+      ansible.builtin.shell: ls /tmp/{{ image_name }} 2> /dev/null && echo "Folder exists" || mkdir /tmp/{{ image_name }} 
+    - name: "Save image tar"
+      containers.podman.podman_save:
+        image: "{{ image_name }}:{{ image_tag }}"
+        dest: "/tmp/{{ image_name }}/{{ image_archive }}"

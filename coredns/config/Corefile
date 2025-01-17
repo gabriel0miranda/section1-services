@@ -1,7 +1,12 @@
 section1:5353 {
-  file db.section1
   log
   errors
+  file /var/coredns/db.section1
+}
+
+.:5353 {
   cache
+  log
+  errors
   forward . 1.1.1.1 1.0.0.1
 }

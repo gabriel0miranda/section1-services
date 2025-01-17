@@ -1,6 +1,6 @@
 FROM alpine:3.21
 
-WORKDIR /usr/share/bind
+WORKDIR /usr/share/coredns
 
 COPY config/db.section1 /var/coredns/
 
@@ -10,7 +10,7 @@ RUN apk --no-cache update && \
 
 COPY config/Corefile /etc/coredns/Corefile
 
-RUN chown -R coredns:coredns /etc/coredns/Corefile /etc/coredns/
+RUN chown -R coredns:coredns /etc/coredns/Corefile /etc/coredns/ /var/coredns/
 
 COPY supervisor/coredns.conf /etc/coredns.conf
 
@@ -20,7 +20,7 @@ RUN chmod +x /usr/local/bin/docker-entrypoint
 
 EXPOSE 5353/tcp 5353/udp 953/tcp
 
-#USER coredns
+USER coredns
 
 RUN set PATH=PATH:/usr/local/bin
 

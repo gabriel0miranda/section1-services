@@ -1,0 +1,30 @@
+---
+- name: Deploy coredns image
+  hosts: machines
+  gather_facts: yes
+  vars:
+    container_port: 5353
+    host_port: 53
+    image_name: coredns-dns-server
+    image_archive: coredns-server.tar
+    image_tag: 0.0.2
+    service_name: coredns
+  tasks:
+    - name: "Copy image archive to host(s)"
+      ansible.builtin.copy:
+        src: "/tmp/{{ image_name }}/{{ image_archive }}"
+        dest: "/home/anon/{{ image_archive }}"
+        owner: anon
+        group: anon
+        mode: u=rw,g=r,o=r
+    - name: "Load image from archive"
+      containers.podman.podman_load:
+        input: "/home/anon/{{ image_archive }}"
+    - name: "Run image"
+      containers.podman.podman_container:
+        name: "{{ service_name }}"
+        image: "localhost/{{ image_name }}:{{ image_tag }}"
+        state: started
+        publish:
+          - "192.168.0.111:{{ host_port }}:{{ container_port }}/udp"
+      

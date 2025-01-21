@@ -1,14 +1,14 @@
 ---
-- name: Deploy coredns image
+- name: Deploy traefik image
   hosts: machines
   gather_facts: yes
   vars:
-    container_port: 5353
-    host_port: 53
-    image_name: coredns-dns-server
-    image_archive: coredns-server.tar
+    container_port: 8000
+    host_port: 8000
+    image_name: traefik-reverse-proxy
+    image_archive: traefik-server.tar
     image_tag: 0.0.2
-    service_name: coredns
+    service_name: traefik
     service_network: mugi-internal-network
   tasks:
     - name: "Copy image archive to host(s)"
@@ -21,12 +21,16 @@
     - name: "Load image from archive"
       containers.podman.podman_load:
         input: "/home/anon/{{ image_archive }}"
+    - name: "Start podman systemd socket"
+      ansible.builtin.shell: systemctl --user start podman.socket
     - name: "Run image"
       containers.podman.podman_container:
         name: "{{ service_name }}"
         image: "localhost/{{ image_name }}:{{ image_tag }}"
         state: started
         net: {{ service_network }}
+        volumes:
+          - "/run/user/1000/podman/podman.sock:/var/run/docker.sock"
         publish:
           - "192.168.0.111:{{ host_port }}:{{ container_port }}/udp"
       

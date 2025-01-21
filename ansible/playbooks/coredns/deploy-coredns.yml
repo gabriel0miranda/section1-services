@@ -27,6 +27,9 @@
         image: "localhost/{{ image_name }}:{{ image_tag }}"
         state: started
         net: {{ service_network }}
+        labels:
+          traefik.http.routers.whoami.rule: Host(`ns.section1`)
+          traefik.http.services.whoami.loadbalancer.server.port: 53
         publish:
           - "192.168.0.111:{{ host_port }}:{{ container_port }}/udp"
       

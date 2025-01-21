@@ -1,12 +1,12 @@
 ---
-- name: Build coredns image # doing this locally right now since I don't have a CI thing going
+- name: Build traefik image # doing this locally right now since I don't have a CI thing going
   hosts: localhost
   gather_facts: yes
   vars:
-    build_path: ../../../coredns/
-    image_name: coredns-dns-server
+    build_path: ../../../traefik/
+    image_name: traefik-dns-server
     image_tag: 0.0.2
-    image_archive: coredns-server.tar
+    image_archive: traefik-server.tar
   tasks:
     - name: "Build image using podman"
       containers.podman.podman_image:
